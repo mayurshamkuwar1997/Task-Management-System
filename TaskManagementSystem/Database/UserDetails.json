@@ -1,0 +1,16 @@
+[
+  {
+    "Id": "e2cb9f84-e52e-4f73-b7ca-2311562bf13d",
+    "Name": "Test User 1",
+    "Email": "test1@gmail.com",
+    "PhoneNumber": "1234567890",
+    "Password": "test1"
+  },
+  {
+    "Id": "7745450d-1ada-4e14-aab2-e1a5de3e46c9",
+    "Name": "Test User 2",
+    "Email": "test2@gmail.com",
+    "PhoneNumber": "9876543210",
+    "Password": "test2"
+  }
+]

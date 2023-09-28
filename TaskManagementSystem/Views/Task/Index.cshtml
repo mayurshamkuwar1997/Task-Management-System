@@ -1,0 +1,116 @@
+﻿@model IEnumerable<TaskManagementSystem.Models.TaskViewModel>
+
+@{
+    ViewData["Title"] = "Task Management";
+    List<RegisterViewModel> users = ViewData["UserList"] as List<RegisterViewModel>;
+}
+
+<div class="container mt-5">
+    <h1>Task Dashboard</h1>
+    <div class="row mt-4 mb-4">
+        <div class="col-md-4">
+            <form asp-action="Search" class="d-flex">
+                <input id="searchKey" class="form-control mr-2" placeholder="Search here..." name="searchKey" />
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form asp-action="Filter" method="post" class="d-flex">
+                <select class="form-control mr-2" name="completionStatus">
+                    <option id="0">--Select--</option>
+                    <option value="1">Completed</option>
+                    <option value="2">Not Completed</option>
+                </select>
+                <input class="form-control mr-2" type="date" name="selectedDate" />
+                <input type="submit" value="Filter" class="btn btn-primary" />
+            </form>
+        </div>
+        <div class="col-md-2 text-right">
+            <form asp-action="Reset">
+                <input type="submit" value="Reset Data" class="btn btn-danger" />
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <a asp-area="" asp-controller="Task" asp-action="Create" class="btn btn-success">Create Task</a>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Title)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.IsCompleted)</th>
+                <th>@Html.DisplayNameFor(model => model.DueDate)</th>
+                <th>@Html.DisplayNameFor(model => model.AssignedUserName)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @if (!item.IsEditMode)
+                    {
+                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.IsCompleted)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DueDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AssignedUserName)</td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-primary mr-2" })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                        </td>
+                    }
+                    else
+                    {
+                        <form asp-action="Update" asp-controller="Task" method="post">
+                        <td>
+                            <input type="hidden" name="Id" value="@item.Id">
+                            <input type="text" name="Title" value="@item.Title" class="form-control" />
+                        </td>
+                        <td>
+                            <input type="text" name="Description" value="@item.Description" class="form-control" />
+                        </td>
+                        <td>
+                            <input type="checkbox" name="IsCompleted1" onclick="setValue(this.checked)" @(item.IsCompleted ? "checked" : "") class="form-check-input" />
+                            <input type="hidden" name="IsCompleted" id="IsCompleted" value="@item.IsCompleted.ToString()" />
+                        </td>
+                        <td>
+                            <input type="date" name="DueDate" value="@item.DueDate.ToString("yyyy-MM-dd")" class="form-control" />
+                        </td>
+                        <td>
+                                @if (users != null && users.Any())
+                                {
+                                <select name="AssignedUserId" id="AssignedUserId" class="form-control">
+                                        @foreach (var user in users)
+                                        {
+                                        <option value="@user.Id">@user.Name</option>
+                                        }
+                                </select>
+                                <script>
+                                    document.getElementById("AssignedUserId").value = "@item.AssignedUserId";
+                                </script>
+                                }
+                        </td>
+                        <td>
+                            <input class="btn btn-success" type="submit" value="Update" name="Update" />
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                        </td>
+                        </form>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function setValue(value) {
+        var domEle = document.getElementById("IsCompleted");
+        domEle.value = value;
+    }
+</script>
